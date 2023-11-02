@@ -171,7 +171,30 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   assert (width >= 0);
   assert (height >= 0);
   assert (0 < maxval && maxval <= PixMax);
-  // Insert your code here!
+  Image newImg = (Image)malloc(sizeof(struct image));
+
+  if (newImg == NULL) {
+	  printf("Memory couldn't be allocated for new image");
+	  return NULL;
+  }
+
+  newImg->width = width;
+  newImg->height = height;
+  newImg->maxval = maxval;
+
+  size_t pixelSize = width * height * sizeof(uint8);
+  newImage->pixel = (uint8*)malloc(pixelSize);
+  if (pixelSize == NULL) {
+	  free(newImg);
+	  printf("Memory couldn't be allocated for new image");
+	  return NULL;
+  }
+
+  for (int i = 0; i < width * height; i++) {
+	  newImg->pixel[i] = 0;
+  }
+
+  return newImg;
 }
 
 /// Destroy the image pointed to by (*imgp).
@@ -181,7 +204,12 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 /// Should never fail, and should preserve global errno/errCause.
 void ImageDestroy(Image* imgp) { ///
   assert (imgp != NULL);
-  // Insert your code here!
+
+  if (*imgp != NULL) {
+	  free((*imgp)->pixel);
+	  free((*imgp));
+	  *imgp = NULL;
+  }
 }
 
 
