@@ -183,8 +183,8 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   newImg->maxval = maxval;
 
   size_t pixelSize = width * height * sizeof(uint8);
-  newImage->pixel = (uint8*)malloc(pixelSize);
-  if (pixelSize == NULL) {
+  newImg->pixel = (uint8*)malloc(pixelSize);
+  if (pixelSize == 0) {
 	  free(newImg);
 	  printf("Memory couldn't be allocated for new image");
 	  return NULL;
