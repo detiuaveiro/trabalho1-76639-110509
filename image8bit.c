@@ -399,6 +399,14 @@ void ImageSetPixel(Image img, int x, int y, uint8 level) { ///
 void ImageNegative(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+  int x, y;
+
+  for (x = 0; x < img->width; x++) {
+	  for (y = 0; y < img->height; y++) {
+	    uint8 pixelColor = PixMax - ImageGetPixel(img, x, y);     // Calculates new pixelColor, subtracting PixMax with the former pixelColor, inverting the color.
+      ImageSetPixel(img, x, y, pixelColor);                     
+    }
+  }
 }
 
 /// Apply threshold to image.
@@ -407,6 +415,20 @@ void ImageNegative(Image img) { ///
 void ImageThreshold(Image img, uint8 thr) { ///
   assert (img != NULL);
   // Insert your code here!
+
+  int x, y;
+
+  for (x = 0; x < img->width; x++) {
+	  for (y = 0; y < img->height; y++) {
+	    if (ImageGetPixel(img, x, y) < 0){
+        ImageSetPixel(img, x, y, 0);
+      }
+      else {
+        ImageSetPixel(img, x, y, ImageMaxval(img));
+      }
+
+    }
+  }
 }
 
 /// Brighten image by a factor.
@@ -417,6 +439,17 @@ void ImageBrighten(Image img, double factor) { ///
   assert (img != NULL);
   // ? assert (factor >= 0.0);
   // Insert your code here!
+  int x, y;
+
+  for (x = 0; x < img->width; x++) {
+	  for (y = 0; y < img->height; y++) {
+	    uint8 pixelColor = ImageGetPixel(img, x, y);          
+      pixelColor = (int) (pixelColor * factor + 0.5);   // This will round any value without using the math library
+                                                        // if the result of the multiplication is, for example, 2.7, adding 0.5 will be 3.2, which will be 3 when typecasted to int
+                                                        // if the result of the multiplication is, for example, 2.2, adding 0.5 will be 2.7, which will be 2 when typecasted to int
+      ImageSetPixel(img, x, y, pixelColor);
+    }
+  }
 }
 
 
