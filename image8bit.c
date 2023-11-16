@@ -482,11 +482,8 @@ Image ImageRotate(Image img) { ///
   uint8 maxValue = img->maxval;
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
   
-  uint8 oImage[img->width][img->height];
-  uint8 nImage[nWidth][nHeight];
-  
-  for (int i; i < nWidth; i++) {
-	for (int y; y < nHeight; y++) {
+  for (int i = 0; i < nWidth; i++) {
+	for (int y = 0; y < nHeight; y++) {
 	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
 	}
   }
