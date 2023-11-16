@@ -504,7 +504,6 @@ Image ImageRotate(Image img) { ///
 /// On failure, returns NULL and errno/errCause are set accordingly.
 Image ImageMirror(Image img) { ///
   assert (img != NULL);
-  assert(img != NULL);
   int nHeight = img->height;
   int nWidth = img->width;
   uint8 maxValue = img->maxval;
@@ -520,7 +519,7 @@ Image ImageMirror(Image img) { ///
 	}
   }
 
-  return img;
+  return nImg;
 }
 
 /// Crop a rectangular subimage from img.
