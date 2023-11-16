@@ -488,7 +488,7 @@ Image ImageRotate(Image img) { ///
   
   for (int i = 0; i < nWidth; i++) {
 	for (int y = 0; y < nHeight; y++) {
-	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, i, y));
+	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
 	}
   }
 
