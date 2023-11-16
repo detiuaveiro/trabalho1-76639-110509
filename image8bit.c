@@ -361,10 +361,11 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
 // The returned index must satisfy (0 <= index < img->width*img->height)
 static inline int G(Image img, int x, int y) {
   int index;
+  
   // Insert your code here!
   index = x + (y * img->width);
-  index += img->pixel;
-  assert (0 <= index && index < img->width*img->height);
+  //index += img->pixel;
+  assert (index >= 0 && index < (img->width*img->height));    // It's failing this assertion
   return index;
 }
 
@@ -420,7 +421,7 @@ void ImageThreshold(Image img, uint8 thr) { ///
 
   for (x = 0; x < img->width; x++) {
 	  for (y = 0; y < img->height; y++) {
-	    if (ImageGetPixel(img, x, y) < 0){
+	    if (ImageGetPixel(img, x, y) < thr){
         ImageSetPixel(img, x, y, 0);
       }
       else {
@@ -444,7 +445,7 @@ void ImageBrighten(Image img, double factor) { ///
   for (x = 0; x < img->width; x++) {
 	  for (y = 0; y < img->height; y++) {
 	    uint8 pixelColor = ImageGetPixel(img, x, y);          
-      pixelColor = (int) (pixelColor * factor + 0.5);   // This will round any value without using the math library
+      pixelColor = (uint8) (pixelColor * factor + 0.5);   // This will round any value without using the math library
                                                         // if the result of the multiplication is, for example, 2.7, adding 0.5 will be 3.2, which will be 3 when typecasted to int
                                                         // if the result of the multiplication is, for example, 2.2, adding 0.5 will be 2.7, which will be 2 when typecasted to int
       ImageSetPixel(img, x, y, pixelColor);
@@ -565,5 +566,7 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
+
+  //average = ( (somaPixeis+nPixeis/2) /nPixeis );
 }
 
