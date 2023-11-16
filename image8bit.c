@@ -481,12 +481,18 @@ Image ImageRotate(Image img) { ///
   int nHeight = img->width;
   uint8 maxValue = img->maxval;
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
+
+  if (nImg == NULL) {
+	return NULL;
+  }
   
   for (int i = 0; i < nWidth; i++) {
 	for (int y = 0; y < nHeight; y++) {
 	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
 	}
   }
+
+  return nImg;
 }
 
 /// Mirror an image = flip left-right.
