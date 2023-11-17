@@ -347,6 +347,8 @@ int ImageValidPos(Image img, int x, int y) { ///
 int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
+  assert(ImageValidPos(img, x, y));                                             // verifies if pixel position is inside img (invokes ImageValidPos method)
+  return ((0 < w) && (w < (img->width -x)) && (0 < h && h<(img->height -y))); // w is img->width minus the value x, and h is img->width minus the value of y
 }
 
 /// Pixel get & set operations
@@ -483,13 +485,13 @@ Image ImageRotate(Image img) { ///
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
 
   if (nImg == NULL) {
-	return NULL;
+	  return NULL;
   }
   
   for (int i = 0; i < nWidth; i++) {
-	for (int y = 0; y < nHeight; y++) {
-	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
-	}
+	  for (int y = 0; y < nHeight; y++) {
+	    ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
+	  }
   }
 
   return nImg;
@@ -510,13 +512,13 @@ Image ImageMirror(Image img) { ///
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
 
   if (nImg == NULL) {
-	return NULL;
+	  return NULL;
   }
 
   for (int i = 0; i < nWidth; i++) {
-	for (int y = 0; y < nHeight; y++) {
-	  ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, i, y));
-	}
+	  for (int y = 0; y < nHeight; y++) {
+	    ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, i, y));
+	  }
   }
 
   return nImg;
@@ -538,6 +540,27 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   assert (ImageValidRect(img, x, y, w, h));
   // Insert your code here!
+  
+  /*uint8 maxValue = img->maxval;
+  int maxW = x+w-1;
+  int maxH = y+h-1;
+  Image nImg = ImageCreate(w, h, maxValue);
+
+  if (nImg == NULL) {
+	  return NULL;
+  }
+  int posX = 0;
+  for (int i = x; i < maxW; i++) {
+    int posY = 0;
+	  for (int j = y; y < maxH; y++) {
+	    
+      ImageSetPixel(nImg, posX, posY, ImageGetPixel(img, i, j));
+      posY ++;
+	  }
+    posX ++;
+  }
+
+  return nImg;*/
 }
 
 
