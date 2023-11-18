@@ -348,7 +348,7 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
   assert(ImageValidPos(img, x, y));                                             // verifies if pixel position is inside img (invokes ImageValidPos method)
-  return ((0 < w) && (w < (img->width -x)) && (0 < h && h<(img->height -y))); // w is img->width minus the value x, and h is img->width minus the value of y
+  return (0 <= w && w < img->width-x) && (0 <= h && h < img->height-y); // w is img->width minus the value x, and h is img->width minus the value of y
 }
 
 /// Pixel get & set operations
@@ -366,8 +366,8 @@ static inline int G(Image img, int x, int y) {
   
   // Insert your code here!
   index = x + (y * img->width);
-  //index += img->pixel;
-  assert (index >= 0 && index < (img->width*img->height));    // It's failing this assertion
+  
+  assert (index >= 0 && index < (img->width*img->height));    
   return index;
 }
 
@@ -541,26 +541,20 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (ImageValidRect(img, x, y, w, h));
   // Insert your code here!
   
-  /*uint8 maxValue = img->maxval;
-  int maxW = x+w-1;
-  int maxH = y+h-1;
+  uint8 maxValue = img->maxval;
   Image nImg = ImageCreate(w, h, maxValue);
-
+  
+  
   if (nImg == NULL) {
 	  return NULL;
   }
-  int posX = 0;
-  for (int i = x; i < maxW; i++) {
-    int posY = 0;
-	  for (int j = y; y < maxH; y++) {
-	    
-      ImageSetPixel(nImg, posX, posY, ImageGetPixel(img, i, j));
-      posY ++;
-	  }
-    posX ++;
+  for (int i=0; i<w; i++){
+    for(int j=0; j<h; j++){
+      ImageSetPixel(nImg, i, j, ImageGetPixel(img, x+i, y+j));
+    }
   }
-
-  return nImg;*/
+  
+  return nImg;
 }
 
 
