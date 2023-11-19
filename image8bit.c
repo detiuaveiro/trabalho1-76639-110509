@@ -588,6 +588,13 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+  for (int i=0; i<img2->width; i++){
+    for (int j=0; j<img2->height; j++){  
+      uint8 blend = (uint8)( (1-alpha) * ImageGetPixel(img1,i+x,j+y) + (alpha) * ImageGetPixel(img2,i,j) );                       
+      ImageSetPixel(img1, i+x, j+y, blend);
+    }
+  }
 }
 
 /// Compare an image to a subimage of a larger image.
