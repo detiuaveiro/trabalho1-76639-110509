@@ -542,7 +542,7 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   // Insert your code here!
   
   uint8 maxValue = img->maxval;
-  Image nImg = ImageCreate(w, h, maxValue);
+  Image nImg = ImageCreate(w, h, maxValue);                         // Creates a new white Image with w width and h height
   
   
   if (nImg == NULL) {
@@ -550,7 +550,7 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   }
   for (int i=0; i<w; i++){
     for(int j=0; j<h; j++){
-      ImageSetPixel(nImg, i, j, ImageGetPixel(img, x+i, y+j));
+      ImageSetPixel(nImg, i, j, ImageGetPixel(img, x+i, y+j));    // Sets the each pixel in the new image in the position (i,j) after obtaining the pixel of the original image in the position (x+i, y+j)
     }
   }
   
@@ -569,6 +569,12 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+  for (int i=0; i<img2->width; i++){
+    for (int j=0; j<img2->height; j++){                           
+      ImageSetPixel(img1, i+x, j+y, ImageGetPixel(img2,  i, j)); //Set the pixel of the img2 in the position on img1, in the position it original was in img2 + the values of x and y
+    }
+  }
 }
 
 /// Blend an image into a larger image.
