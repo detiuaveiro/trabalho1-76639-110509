@@ -673,6 +673,43 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
+  Image imgOriginal = img;
+
+  for (int i = 0; i < img->width; i++) {
+	for (int j = 0; j < img->height; j++) {
+	  int sum = 0;
+	  int count = 0;
+	  //uint8 pixels[8];
+	  /*if (i != 0 && j != 0 && i < img->width - 1 && j < img->height - 1) {
+		pixels[0] = ImageGetPixel(img, i - 1, j - 1);
+		pixels[1] = ImageGetPixel(img, i - 1, j);
+		pixels[2] = ImageGetPixel(img, i - 1, j + 1);
+		pixels[3] = ImageGetPixel(img, i, j - 1);
+		pixels[4] = ImageGetPixel(img, i, j + 1);
+		pixels[5] = ImageGetPixel(img, i + 1, j - 1);
+		pixels[6] = ImageGetPixel(img, i + 1, j);
+		pixels[7] = ImageGetPixel(img, i + 1, j + 1);
+	  }
+	  else
+	  {
+		break;
+	  }
+
+	  sum = pixels*/
+
+	  for (int k = i - dx; k <= i + dx; k++) {
+		for (int l = j - dy; l <= j + dy; l++) {
+		  if (k >= 0 && k < width && l >= 0 && l < height) {
+			sum += ImageGetPixel(imgOriginal, k, l);
+			count++;
+		  }
+
+		  ImageSetPixel(img, i, j, (uint8)(sum / count));
+		}
+	  }
+	}
+  }
+
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
 }
 
