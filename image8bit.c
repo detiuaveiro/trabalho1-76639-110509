@@ -631,7 +631,7 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   int y = NULL;
   for (int i = 0; i < img1->width; i++) {
 	for (int j = 0; j < img1->height; j++) {
-	  if (ImageGetPixel(img1, i, j) == ImageGetPixel(img2, 0, 0) && img1->width > i + img2->width && img1->height > i + img2->height) {
+	  if (ImageGetPixel(img1, i, j) == ImageGetPixel(img2, 0, 0) && img1->width >= i + img2->width && img1->height >= i + img2->height) {
 		x = i;
 		y = j;
 
