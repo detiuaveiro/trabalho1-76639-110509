@@ -699,14 +699,14 @@ void ImageBlur(Image img, int dx, int dy) { ///
 
 	  for (int k = i - dx; k <= i + dx; k++) {
 		for (int l = j - dy; l <= j + dy; l++) {
-		  if (k >= 0 && k < width && l >= 0 && l < height) {
+		  if (k >= 0 && k < img->width && l >= 0 && l < img->height) {
 			sum += ImageGetPixel(imgOriginal, k, l);
 			count++;
 		  }
-
-		  ImageSetPixel(img, i, j, (uint8)(sum / count));
 		}
 	  }
+
+	  ImageSetPixel(img, i, j, (uint8)(sum / count));
 	}
   }
 
