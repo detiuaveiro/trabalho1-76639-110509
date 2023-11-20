@@ -572,7 +572,7 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
 
   for (int i=0; i<img2->width; i++){
     for (int j=0; j<img2->height; j++){                           
-      ImageSetPixel(img1, i+x, j+y, ImageGetPixel(img2,  i, j)); //Set the pixel of the img2 in the position on img1, in the position it original was in img2 + the values of x and y
+      ImageSetPixel(img1, i+x, j+y, ImageGetPixel(img2,  i, j)); //Set the pixel of the img2 in the position on img1, in the position it originally was in img2 + the values of x and y
     }
   }
 }
@@ -591,7 +591,7 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
 
   for (int i=0; i<img2->width; i++){
     for (int j=0; j<img2->height; j++){  
-      uint8 blend = (uint8)( (1-alpha) * ImageGetPixel(img1,i+x,j+y) + (alpha) * ImageGetPixel(img2,i,j) );                       
+      uint8 blend = (uint8)( (1-alpha) * ImageGetPixel(img1,i+x,j+y) + (alpha) * ImageGetPixel(img2,i,j) +0.5);                       
       ImageSetPixel(img1, i+x, j+y, blend);
     }
   }
