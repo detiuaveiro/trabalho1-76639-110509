@@ -173,8 +173,7 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   assert (0 < maxval && maxval <= PixMax);
   Image newImg = (Image)malloc(sizeof(struct image));
 
-  if (newImg == NULL) {
-	  printf("Memory couldn't be allocated for new image");
+  if (!check (newImg != NULL, "Memory couldn't be allocated for new image!")) {
 	  return NULL;
   }
 
@@ -184,9 +183,8 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 
   size_t pixelSize = width * height * sizeof(uint8);
   newImg->pixel = (uint8*)malloc(pixelSize);
-  if (pixelSize == 0) {
+  if (!check(newImg->pixel != NULL, "No pixel in image!")) {
 	  free(newImg);
-	  printf("Memory couldn't be allocated for new image");
 	  return NULL;
   }
 
@@ -627,7 +625,7 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   // Insert your code here!
-  int x = NULL;
+  /*int x = NULL;
   int y = NULL;
   for (int i = 0; i < img1->width; i++) {
 	for (int j = 0; j < img1->height; j++) {
@@ -658,8 +656,17 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 		return 1;
 	  }
 	}
-  }
+  }*/
 
+  for (int i = 0; i<=img1->width-img2->width; i++){
+    for (int j =0; i<=img1->height-img2->height; j++){
+      if(ImageMatchSubImage(img1, i, j, img2)){
+        *px = i;
+        *py = j;
+        return 1;
+      }
+    }
+  }
   return 0;
 }
 
@@ -673,42 +680,32 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
-  Image imgOriginal = img;
-
+  Image imgOriginal = ImageCreate(img->width, img->height, img->maxval);
+  
   for (int i = 0; i < img->width; i++) {
-	for (int j = 0; j < img->height; j++) {
-	  int sum = 0;
-	  int count = 0;
-	  //uint8 pixels[8];
-	  /*if (i != 0 && j != 0 && i < img->width - 1 && j < img->height - 1) {
-		pixels[0] = ImageGetPixel(img, i - 1, j - 1);
-		pixels[1] = ImageGetPixel(img, i - 1, j);
-		pixels[2] = ImageGetPixel(img, i - 1, j + 1);
-		pixels[3] = ImageGetPixel(img, i, j - 1);
-		pixels[4] = ImageGetPixel(img, i, j + 1);
-		pixels[5] = ImageGetPixel(img, i + 1, j - 1);
-		pixels[6] = ImageGetPixel(img, i + 1, j);
-		pixels[7] = ImageGetPixel(img, i + 1, j + 1);
-	  }
-	  else
-	  {
-		break;
-	  }
+	  for (int j = 0; j < img->height; j++) {
+	    int sum = 0;
+	    int count = 0;
+	  
 
-	  sum = pixels*/
-
-	  for (int k = i - dx; k <= i + dx; k++) {
-		for (int l = j - dy; l <= j + dy; l++) {
-		  if (k >= 0 && k < img->width && l >= 0 && l < img->height) {
-			sum += ImageGetPixel(imgOriginal, k, l);
-			count++;
-		  }
-		}
+	    for (int k = i - dx; k <= i + dx; k++) {
+		    for (int l = j - dy; l <= j + dy; l++) {
+		      if (ImageValidPos(img, k, l)) {
+			      sum += ImageGetPixel(img, k, l);
+			      count++;
+		      }
+		    }
+	    } 
+	  ImageSetPixel(imgOriginal, i, j, (uint8) (((sum+count/2)/count)));
 	  }
-
-	  ImageSetPixel(img, i, j, (uint8)(sum / count));
-	}
   }
+  
+  for(int x = 0; x < img->width; x++){        
+    for(int y = 0; y < img->height; y++){
+      ImageSetPixel(img , x, y, ImageGetPixel(imgOriginal,x,y));
+    }
+  }
+  ImageDestroy(&imgOriginal);
 
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
 }
