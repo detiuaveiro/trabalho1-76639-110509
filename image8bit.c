@@ -438,7 +438,7 @@ void ImageThreshold(Image img, uint8 thr) { ///
 /// darken the image if factor<1.0.
 void ImageBrighten(Image img, double factor) { ///
   assert (img != NULL);
-  // ? assert (factor >= 0.0);
+  assert (factor >= 0.0);
   // Insert your code here!
   int x, y;
 
@@ -488,11 +488,13 @@ Image ImageRotate(Image img) { ///
   
   for (int i = 0; i < nWidth; i++) {
 	  for (int y = 0; y < nHeight; y++) {
-	    ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));
+	    //ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));       /// Rotação de 90º em sentido do relógio (não passa os testes)
+      ImageSetPixel(nImg,  i, img->width-1-y, ImageGetPixel(img, y, i));        /// Rotação de 90º em sentido contra-relógio (passa nos testes)
 	  }
   }
 
   return nImg;
+
 }
 
 /// Mirror an image = flip left-right.
@@ -691,20 +693,20 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	    for (int k = i - dx; k <= i + dx; k++) {
 		    for (int l = j - dy; l <= j + dy; l++) {
 		      if (ImageValidPos(img, k, l)) {
-			      sum += ImageGetPixel(img, k, l);
+			      sum += ImageGetPixel(imgOriginal, k, l);
 			      count++;
 		      }
 		    }
 	    } 
-	  ImageSetPixel(imgOriginal, i, j, (uint8) (((sum+count/2)/count)));
+	  ImageSetPixel(img, i, j, (uint8) (((sum+count/2)/count)));
 	  }
   }
   
-  for(int x = 0; x < img->width; x++){        
+  /*for(int x = 0; x < img->width; x++){        
     for(int y = 0; y < img->height; y++){
       ImageSetPixel(img , x, y, ImageGetPixel(imgOriginal,x,y));
     }
-  }
+  }*/
   ImageDestroy(&imgOriginal);
 
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
