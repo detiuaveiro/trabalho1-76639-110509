@@ -683,8 +683,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
   Image imgOriginal = ImageCreate(img->width, img->height, img->maxval);
-
-  imgOriginal->*pixel = img->*pixel;
+  memcpy((void*)imgOriginal->pixel, (void*)img->pixel, img->width * img-> height):
   
   for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
