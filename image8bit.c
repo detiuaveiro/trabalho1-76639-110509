@@ -682,7 +682,9 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
-  Image imgOriginal = img;
+  Image imgOriginal = ImageCreate(img->width, img->height, img->maxval);
+
+  imgOriginal->*pixel = img->*pixel;
   
   for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
