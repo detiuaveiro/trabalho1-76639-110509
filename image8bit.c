@@ -45,6 +45,8 @@
 // Maximum value you can store in a pixel (maximum maxval accepted)
 const uint8 PixMax = 255;
 
+void * memcpy(void* , void*, size_t);
+
 // Internal structure for storing 8-bit graymap images
 struct image {
   int width;
@@ -626,39 +628,6 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
 int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
-  // Insert your code here!
-  /*int x = NULL;
-  int y = NULL;
-  for (int i = 0; i < img1->width; i++) {
-	for (int j = 0; j < img1->height; j++) {
-	  if (ImageGetPixel(img1, i, j) == ImageGetPixel(img2, 0, 0) && img1->width >= i + img2->width && img1->height >= i + img2->height) {
-		x = i;
-		y = j;
-
-		for (int k = 0; k < img2->width; k++) {
-		  for (int l = 0; l < img2->height; l++) {
-			if (ImageGetPixel(img1, i + k, j + l) != ImageGetPixel(img2, k, l)) {
-			  x = NULL;
-			  y = NULL;
-
-			  break;
-			}
-		  }
-
-		  if (x == NULL) {
-			break;
-		  }
-		}
-	  }
-
-	  if (x != NULL) {
-		*px = x;
-		*py = y;
-
-		return 1;
-	  }
-	}
-  }*/
 
   for (int i = 0; i<=img1->width-img2->width; i++){
     for (int j =0; i<=img1->height-img2->height; j++){
@@ -682,8 +651,8 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
-  Image imgOriginal = ImageCreate(img->width, img->height, img->maxval);
-  memcpy((void*)imgOriginal->pixel, (void*)img->pixel, img->width * img-> height):
+  Image imgAuxiliar = ImageCreate(img->width, img->height, img->maxval);
+  memcpy((void*)imgAuxiliar->pixel, (void*)img->pixel, img->width * img-> height);
   
   for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
@@ -694,7 +663,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	    for (int k = i - dx; k <= i + dx; k++) {
 		    for (int l = j - dy; l <= j + dy; l++) {
 		      if (ImageValidPos(img, k, l)) {
-			      sum += ImageGetPixel(imgOriginal, k, l);
+			      sum += ImageGetPixel(imgAuxiliar, k, l);
 			      count++;
 		      }
 		    }
@@ -702,13 +671,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	  ImageSetPixel(img, i, j, (uint8) (((sum+count/2)/count)));
 	  }
   }
-  
-  /*for(int x = 0; x < img->width; x++){        
-    for(int y = 0; y < img->height; y++){
-      ImageSetPixel(img , x, y, ImageGetPixel(imgOriginal,x,y));
-    }
-  }*/
-  ImageDestroy(&imgOriginal);
+  ImageDestroy(&imgAuxiliar);
 
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
 }
