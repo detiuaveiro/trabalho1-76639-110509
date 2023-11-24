@@ -652,17 +652,22 @@ void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
 
   Image imgAuxiliar = ImageCreate(img->width, img->height, img->maxval);
-  memcpy((void*)imgAuxiliar->pixel, (void*)img->pixel, img->width * img-> height);
+  memcpy((void*)imgAuxiliar->pixel, (void*)img->pixel, img->width * img-> height);    //copies original image to the previously created Auxiliar Image.
   
+  //Goes through every position of the original image
+ 
   for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
 	    int sum = 0;
 	    int count = 0;
-	  
+
+      // Goes through every position of the sub-image with dx width and dy height
 
 	    for (int k = i - dx; k <= i + dx; k++) {
 		    for (int l = j - dy; l <= j + dy; l++) {
+          //Checks if the position is valid
 		      if (ImageValidPos(img, k, l)) {
+            //Sum the pixel of the auxiliar image and increments count.
 			      sum += ImageGetPixel(imgAuxiliar, k, l);
 			      count++;
 		      }
@@ -671,6 +676,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	  ImageSetPixel(img, i, j, (uint8) (((sum+count/2)/count)));
 	  }
   }
+
   ImageDestroy(&imgAuxiliar);
 
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
