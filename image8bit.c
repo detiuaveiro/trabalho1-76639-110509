@@ -173,8 +173,10 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   assert (width >= 0);
   assert (height >= 0);
   assert (0 < maxval && maxval <= PixMax);
+  //Allocates memory for a new Image
   Image newImg = (Image)malloc(sizeof(struct image));
-
+  //Checks if it is possible to allocate memory
+  //If it is not possible, shows error image and returns NULL
   if (!check (newImg != NULL, "Memory couldn't be allocated for new image!")) {
 	  return NULL;
   }
@@ -182,14 +184,16 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   newImg->width = width;
   newImg->height = height;
   newImg->maxval = maxval;
-
+  //Calculates the number of pixels necessary
   size_t pixelSize = width * height * sizeof(uint8);
   newImg->pixel = (uint8*)malloc(pixelSize);
+  //Verifies if there's pixels values in the new image created
+  //If it doesn't verify, shows error message, free the space previously allocated and returns NULL
   if (!check(newImg->pixel != NULL, "No pixel in image!")) {
 	  free(newImg);
 	  return NULL;
   }
-
+  //Creates a black Image by altering every pixel in the image to a pixel with the value 0 (black)
   for (int i = 0; i < width * height; i++) {
 	  newImg->pixel[i] = 0;
   }
@@ -347,8 +351,10 @@ int ImageValidPos(Image img, int x, int y) { ///
 int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
-  assert(ImageValidPos(img, x, y));                                             // verifies if pixel position is inside img (invokes ImageValidPos method)
-  return (0 <= w && w < img->width-x) && (0 <= h && h < img->height-y); // w is img->width minus the value x, and h is img->width minus the value of y
+  // verifies if pixel position is inside img (invokes ImageValidPos method)
+  assert(ImageValidPos(img, x, y)); 
+  // w is img->width minus the value x, and h is img->width minus the value of y                                            
+  return (0 <= w && w < img->width-x) && (0 <= h && h < img->height-y); 
 }
 
 /// Pixel get & set operations
@@ -406,7 +412,8 @@ void ImageNegative(Image img) { ///
 
   for (x = 0; x < img->width; x++) {
 	  for (y = 0; y < img->height; y++) {
-	    uint8 pixelColor = PixMax - ImageGetPixel(img, x, y);     // Calculates new pixelColor, subtracting PixMax with the former pixelColor, inverting the color.
+      // Calculates new pixelColor, subtracting PixMax with the former pixelColor, inverting the colour.
+	    uint8 pixelColor = PixMax - ImageGetPixel(img, x, y);     
       ImageSetPixel(img, x, y, pixelColor);                     
     }
   }
@@ -420,10 +427,12 @@ void ImageThreshold(Image img, uint8 thr) { ///
   // Insert your code here!
 
   int x, y;
-
+  //Changes the colour of the pixel according to the value of the threshold given
+  //It'll change to white whenever the value of the colour is >= to the threshold
+  //And change to black if the previous isn't verified
   for (x = 0; x < img->width; x++) {
 	  for (y = 0; y < img->height; y++) {
-	    if (ImageGetPixel(img, x, y) < thr){
+	    if (ImageGetPixel(img, x, y) < thr){           
         ImageSetPixel(img, x, y, 0);
       }
       else {
@@ -482,12 +491,12 @@ Image ImageRotate(Image img) { ///
   int nWidth = img->height;
   int nHeight = img->width;
   uint8 maxValue = img->maxval;
+  //Create a new image that'll be rotated
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
 
   if (nImg == NULL) {
 	  return NULL;
   }
-  
   for (int i = 0; i < nWidth; i++) {
 	  for (int y = 0; y < nHeight; y++) {
 	    //ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, y, i));       /// Rotação de 90º em sentido do relógio (não passa os testes)
@@ -511,15 +520,21 @@ Image ImageMirror(Image img) { ///
   int nHeight = img->height;
   int nWidth = img->width;
   uint8 maxValue = img->maxval;
+  // Create a new image that'll be a mirror of the original image
   Image nImg = ImageCreate(nWidth, nHeight, maxValue);
 
   if (nImg == NULL) {
 	  return NULL;
   }
-
+  // Goes through every position of the freshly created image
   for (int i = 0; i < nWidth; i++) {
 	  for (int y = 0; y < nHeight; y++) {
+      //The value for y remains the same
+      //The value of x is changed, so that the first x becomes the last, and the last becomes the first
+      //nWidth-1 is the last position that x can have. Then the current position is subtracted to the last position.
 	    ImageSetPixel(nImg, nWidth - 1 - i, y, ImageGetPixel(img, i, y));
+      //This way, in a 8 by 8 image, for example, y of the new image will always be the current position
+      //While x will be follow the formula: x=7-currentPosition
 	  }
   }
 
@@ -552,7 +567,8 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   }
   for (int i=0; i<w; i++){
     for(int j=0; j<h; j++){
-      ImageSetPixel(nImg, i, j, ImageGetPixel(img, x+i, y+j));    // Sets the each pixel in the new image in the position (i,j) after obtaining the pixel of the original image in the position (x+i, y+j)
+      // Sets each pixel in the new image in the position (i,j) after obtaining the pixel of the original image in the position (x+i, y+j)
+      ImageSetPixel(nImg, i, j, ImageGetPixel(img, x+i, y+j));    
     }
   }
   
@@ -571,7 +587,7 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
-
+  //Goes through every position of image2
   for (int i=0; i<img2->width; i++){
     for (int j=0; j<img2->height; j++){                           
       ImageSetPixel(img1, i+x, j+y, ImageGetPixel(img2,  i, j)); //Set the pixel of the img2 in the position on img1, in the position it originally was in img2 + the values of x and y
@@ -590,10 +606,13 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
-
+  //Goes through every position of image2
   for (int i=0; i<img2->width; i++){
     for (int j=0; j<img2->height; j++){  
-      uint8 blend = (uint8)( (1-alpha) * ImageGetPixel(img1,i+x,j+y) + (alpha) * ImageGetPixel(img2,i,j) +0.5);                       
+      //Blends image1 and image2, according to a value alpha given, rounding the final value given
+      //Follows the formula (1-alpha)*(Pixel(img1))+(alpha)*(Pixel(img2))
+      uint8 blend = (uint8)( (1-alpha) * ImageGetPixel(img1,i+x,j+y) + (alpha) * ImageGetPixel(img2,i,j) +0.5);
+      //Stores the value in the correct position in the image1, which will be the current position plus the position given by (x,y)                       
       ImageSetPixel(img1, i+x, j+y, blend);
     }
   }
@@ -609,15 +628,17 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   // Insert your code here!
   int mWidth = img2->width;
   int mHeight = img2->height;
-
+  //Goes through every position of image2
   for (int i = 0; i < mWidth; i++) {
-	for (int j = 0; j < mHeight; j++) {
-	  if (ImageGetPixel(img1, x + i, y + j) != ImageGetPixel(img2, i, j)) {
-		return 0;
+	  for (int j = 0; j < mHeight; j++) {
+      //Compares if the pixels of image2 in the current position with the pixels of image1 in the position given by the sums x+current position && y+current position don't match
+	    if (ImageGetPixel(img1, x + i, y + j) != ImageGetPixel(img2, i, j)) {
+      //Returns 0 (false) if they are different
+		  return 0;
+	    }
 	  }
-	}
   }
-
+  //Returns 1 (true) if the image matches the subimage
   return 1;
 }
 
@@ -628,16 +649,20 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
 int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
-
+  //Goes through every position (pixel) of the image1 as long as the image2 can still fit, i.e., up to img1->width-img2->width && img1->height-img2->height
+  //There's no need to check the pixels further in the image past that point if the image2 as still not been found, because it wouldn't fit any longer 
   for (int i = 0; i<=img1->width-img2->width; i++){
     for (int j =0; i<=img1->height-img2->height; j++){
+      //Checks if the pixel of image2 matches the pixel in image1 in the specified position
       if(ImageMatchSubImage(img1, i, j, img2)){
+        //Alters the value of *px and *py, returning 1 (or true)
         *px = i;
         *py = j;
         return 1;
       }
     }
   }
+  //Returns 0 (or false) if the image2 is not found within the confines of the image1
   return 0;
 }
 
@@ -672,11 +697,13 @@ void ImageBlur(Image img, int dx, int dy) { ///
 			      count++;
 		      }
 		    }
-	    } 
+	    }
+
+    // Sets the value of the pixel in the original pixel. The value of the pixel is the average of the pixels in the vicinity, adjusted for rounding 
 	  ImageSetPixel(img, i, j, (uint8) (((sum+count/2)/count)));
 	  }
   }
-
+  //destroys the Auxiliar image
   ImageDestroy(&imgAuxiliar);
 
   //average = ( (somaPixeis+nPixeis/2) /nPixeis );
