@@ -11,7 +11,7 @@
 
 // Student authors (fill in below):
 // NMec:  Name:
-// 
+// 76639  Filipe Tavares de Sousa
 // 
 // 
 // Date:
@@ -155,6 +155,9 @@ void ImageInit(void) { ///
 // Macros to simplify accessing instrumentation counters:
 #define PIXMEM InstrCount[0]
 // Add more macros here...
+#define CountLocate InstrCount[1]
+#define CountBlur InstrCount[2]
+#define SumBlur InstrCount[3]
 
 // TIP: Search for PIXMEM or InstrCount to see where it is incremented!
 
@@ -631,6 +634,7 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   //Goes through every position of image2
   for (int i = 0; i < mWidth; i++) {
 	  for (int j = 0; j < mHeight; j++) {
+      CountLocate++;
       //Compares if the pixels of image2 in the current position with the pixels of image1 in the position given by the sums x+current position && y+current position don't match
 	    if (ImageGetPixel(img1, x + i, y + j) != ImageGetPixel(img2, i, j)) {
       //Returns 0 (false) if they are different
@@ -681,7 +685,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
   
   //Goes through every position of the original image
  
-  for (int i = 0; i < img->width; i++) {
+  /*for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
 	    int sum = 0;
 	    int count = 0;
@@ -690,8 +694,10 @@ void ImageBlur(Image img, int dx, int dy) { ///
 
 	    for (int k = i - dx; k <= i + dx; k++) {
 		    for (int l = j - dy; l <= j + dy; l++) {
+          CountBlur++;
           //Checks if the position is valid
 		      if (ImageValidPos(img, k, l)) {
+            SumBlur++;
             //Sum the pixel of the auxiliar image and increments count.
 			      sum += ImageGetPixel(imgAuxiliar, k, l);
 			      count++;
@@ -704,8 +710,55 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	  }
   }
   //destroys the Auxiliar image
-  ImageDestroy(&imgAuxiliar);
+  ImageDestroy(&imgAuxiliar);*/
 
-  //average = ( (somaPixeis+nPixeis/2) /nPixeis );
+   //A more efficient method to calculate ImageBlur
+  
+  int h = img->height, w = img->width;
+  uint32_t sum[h][w];
+
+  // Sum of every pixel before the position aborded
+  for (int x = 0; x < w; x++){
+    for (int y = 0; y < h; y++){
+      if(x == 0 && y == 0 ){
+        sum[y][x] = (uint32_t)ImageGetPixel(img,x,y); // Value of the (x,y)
+      }else if(x == 0){
+        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y-1][x]);
+        SumBlur++;
+      }else if(y == 0){        
+        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y][x-1]);
+        SumBlur++;
+      }else{
+        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y][x-1] + sum[y-1][x] - sum[y-1][x-1]);
+        SumBlur+=2;
+      }
+    }
+  }
+
+  for (int x = 0; x < w; x++){
+    for (int y = 0; y < h; y++){
+      CountBlur++;
+      
+      int xM = (x+dx<w-1) ? x+dx : w-1;
+      int xm = (x-dx>0) ? x-dx : 0;
+      int yM = (y+dy<h-1) ? y+dy : h-1;
+      int ym = (y-dy>0) ? y-dy : 0;
+      int count = (xM-xm +1)*(yM-ym+1); 
+
+
+      // Searches in array the value of the sum
+      uint32_t a = (ym < 1 || xm < 1 ) ? 0 : sum[ym -1][xm -1];
+      uint32_t b = ym < 1 ? 0 : sum[ym - 1][xM];
+      uint32_t c = xm < 1 ? 0 : sum[yM][xm-1];
+      uint32_t d = sum[yM][xM];
+      // Subtracts the areas of outside the area we are calculating, adding afterwards the area that was twice removed
+      double soma = (double) d-b-c+a;
+      // Sets the value of the pixel we want, rounded
+      ImageSetPixel(img , x, y, (uint8)((soma+count/2)/count));
+    }
+  }
+  
 }
+
+
 
