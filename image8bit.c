@@ -641,7 +641,7 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
       //Compares if the pixels of image2 in the current position with the pixels of image1 in the position given by the sums x+current position && y+current position don't match
 	    if (ImageGetPixel(img1, x + i, y + j) != ImageGetPixel(img2, i, j)) {
       //Returns 0 (false) if they are different
-		  return 0;
+		    return 0;
 	    }
 	  }
   }
@@ -659,10 +659,11 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   //Goes through every position (pixel) of the image1 as long as the image2 can still fit, i.e., up to img1->width-img2->width && img1->height-img2->height
   //There's no need to check the pixels further in the image past that point if the image2 as still not been found, because it wouldn't fit any longer 
   for (int i = 0; i<=img1->width-img2->width; i++){
-    for (int j =0; i<=img1->height-img2->height; j++){
+    for (int j =0; j<=img1->height-img2->height; j++){
       //Checks if the pixel of image2 matches the pixel in image1 in the specified position
       if(ImageMatchSubImage(img1, i, j, img2)){
         //Alters the value of *px and *py, returning 1 (or true)
+        
         *px = i;
         *py = j;
         return 1;
@@ -682,13 +683,13 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
-
+  /*
   Image imgAuxiliar = ImageCreate(img->width, img->height, img->maxval);
   memcpy((void*)imgAuxiliar->pixel, (void*)img->pixel, img->width * img-> height);    //copies original image to the previously created Auxiliar Image.
   
   //Goes through every position of the original image
  
-  /*for (int i = 0; i < img->width; i++) {
+  for (int i = 0; i < img->width; i++) {
 	  for (int j = 0; j < img->height; j++) {
 	    int sum = 0;
 	    int count = 0;
@@ -713,8 +714,8 @@ void ImageBlur(Image img, int dx, int dy) { ///
 	  }
   }
   //destroys the Auxiliar image
-  ImageDestroy(&imgAuxiliar);*/
-
+  ImageDestroy(&imgAuxiliar);
+  */
    //A more efficient method to calculate ImageBlur
   
   int h = img->height, w = img->width;
