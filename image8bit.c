@@ -12,10 +12,10 @@
 // Student authors (fill in below):
 // NMec:  Name:
 // 76639  Filipe Tavares de Sousa
-// 
+// 110509 Rui Albuquerque
 // 
 // Date:
-//
+// 26/11/2023
 
 #include "image8bit.h"
 
