@@ -149,6 +149,9 @@ void ImageInit(void) { ///
   InstrCalibrate();
   InstrName[0] = "pixmem";  // InstrCount[0] will count pixel array acesses
   // Name other counters here...
+  InstrName[1] = "countlocate";
+  InstrName[2] = "countblur";
+  InstrName[3] = "sumblur";
   
 }
 
@@ -634,7 +637,7 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   //Goes through every position of image2
   for (int i = 0; i < mWidth; i++) {
 	  for (int j = 0; j < mHeight; j++) {
-      CountLocate++;
+      CountLocate+=1;
       //Compares if the pixels of image2 in the current position with the pixels of image1 in the position given by the sums x+current position && y+current position don't match
 	    if (ImageGetPixel(img1, x + i, y + j) != ImageGetPixel(img2, i, j)) {
       //Returns 0 (false) if they are different
@@ -694,10 +697,10 @@ void ImageBlur(Image img, int dx, int dy) { ///
 
 	    for (int k = i - dx; k <= i + dx; k++) {
 		    for (int l = j - dy; l <= j + dy; l++) {
-          CountBlur++;
+          CountBlur+=1;
           //Checks if the position is valid
 		      if (ImageValidPos(img, k, l)) {
-            SumBlur++;
+            SumBlur+=1;
             //Sum the pixel of the auxiliar image and increments count.
 			      sum += ImageGetPixel(imgAuxiliar, k, l);
 			      count++;
@@ -718,18 +721,18 @@ void ImageBlur(Image img, int dx, int dy) { ///
   uint32_t sum[h][w];
 
   // Sum of every pixel before the position aborded
-  for (int x = 0; x < w; x++){
-    for (int y = 0; y < h; y++){
-      if(x == 0 && y == 0 ){
-        sum[y][x] = (uint32_t)ImageGetPixel(img,x,y); // Value of the (x,y)
-      }else if(x == 0){
-        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y-1][x]);
-        SumBlur++;
-      }else if(y == 0){        
-        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y][x-1]);
-        SumBlur++;
+  for (int i = 0; i < w; i++){
+    for (int j = 0; j < h; j++){
+      if(i == 0 && j == 0 ){
+        sum[j][i] = (uint32_t)ImageGetPixel(img,i,j); // Value of the (x,y)
+      }else if(i == 0){
+        sum[j][i] = (uint32_t)(ImageGetPixel(img,i,j) + sum[j-1][i]);
+        SumBlur+=1;
+      }else if(j == 0){        
+        sum[j][i] = (uint32_t)(ImageGetPixel(img,i,j) + sum[j][i-1]);
+        SumBlur+=1;
       }else{
-        sum[y][x] = (uint32_t)(ImageGetPixel(img,x,y) + sum[y][x-1] + sum[y-1][x] - sum[y-1][x-1]);
+        sum[j][i] = (uint32_t)(ImageGetPixel(img,i,j) + sum[j][i-1] + sum[j-1][i] - sum[j-1][i-1]);
         SumBlur+=2;
       }
     }
@@ -737,7 +740,7 @@ void ImageBlur(Image img, int dx, int dy) { ///
 
   for (int x = 0; x < w; x++){
     for (int y = 0; y < h; y++){
-      CountBlur++;
+      CountBlur+=1;
       
       int xM = (x+dx<w-1) ? x+dx : w-1;
       int xm = (x-dx>0) ? x-dx : 0;
